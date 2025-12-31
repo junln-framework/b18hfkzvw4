@@ -16,6 +16,8 @@
 
 package top.continew.starter.extension.datapermission.annotation;
 
+import top.continew.starter.extension.datapermission.enums.PermissionJudgeType;
+
 import java.lang.annotation.*;
 
 /**
@@ -63,4 +65,35 @@ public @interface DataPermission {
      * 角色和部门关联表别名
      */
     String roleDeptTableAlias() default "sys_role_dept";
+
+    /**
+     * 关联的表 ,如sys_user_dept
+     */
+    String relationTableField() default "sys_user_dept";
+
+    /**
+     * 关联表 ID 如 sys_user_dept.user_id
+     */
+    String relationField() default "user_id";
+
+    /**
+     * 关联表的 DeptId
+     */
+    String relationDeptIdField() default "dept_id";
+
+    /**
+     * 其他字段名（当judgeType=OTHER_RELATION时使用）
+     * EXISTS (SELECT 1 FROM sys_user_dept sud WHERE sud.user_id = t1.id AND sud.dept_id IN (''))
+     */
+    String mainIdField() default "id";
+
+    /**
+     * 自定义SQL（当scopeType=CUSTOM时使用）
+     */
+    String customSql() default "";
+
+    /**
+     * 权限判断方式
+     */
+    PermissionJudgeType judgeType() default PermissionJudgeType.DEF_DIRECT;
 }

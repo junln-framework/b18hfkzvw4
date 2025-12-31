@@ -42,6 +42,16 @@ public class UserData {
      */
     private Long deptId;
 
+    /**
+     * 部门列表
+     */
+    private Set<DeptData> departments = Collections.emptySet();
+
+    /**
+     * 所有子部门列表
+     */
+    private Set<DeptData> childrenDepartments = Collections.emptySet();
+
     public UserData() {
     }
 
@@ -49,6 +59,25 @@ public class UserData {
         this.userId = userId;
         this.deptId = deptId;
         this.roles = roles != null ? roles : Collections.emptySet();
+    }
+
+    public UserData(Long userId, Long deptId, Set<RoleData> roles, Set<DeptData> departments) {
+        this.userId = userId;
+        this.deptId = deptId;
+        this.roles = roles != null ? roles : Collections.emptySet();
+        this.departments = departments != null ? departments : Collections.emptySet();
+    }
+
+    public UserData(Long userId,
+                    Long deptId,
+                    Set<RoleData> roles,
+                    Set<DeptData> departments,
+                    Set<DeptData> childrenDepartments) {
+        this.userId = userId;
+        this.deptId = deptId;
+        this.roles = roles != null ? roles : Collections.emptySet();
+        this.departments = departments != null ? departments : Collections.emptySet();
+        this.childrenDepartments = childrenDepartments != null ? childrenDepartments : Collections.emptySet();
     }
 
     public Long getUserId() {
@@ -83,4 +112,21 @@ public class UserData {
     public boolean isValid() {
         return userId != null && deptId != null && !roles.isEmpty();
     }
+
+    public Set<DeptData> getDepartments() {
+        return this.departments;
+    }
+
+    public void setDepartments(Set<DeptData> departments) {
+        this.departments = departments != null ? departments : Collections.emptySet();
+    }
+
+    public Set<DeptData> getChildrenDepartments() {
+        return childrenDepartments;
+    }
+
+    public void setChildrenDepartments(Set<DeptData> childrenDepartments) {
+        this.childrenDepartments = childrenDepartments != null ? childrenDepartments : Collections.emptySet();
+    }
+
 }

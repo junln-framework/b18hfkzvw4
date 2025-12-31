@@ -42,6 +42,11 @@ public class DataPermissionCurrentUser {
     private String deptId;
 
     /**
+     * 如果用户属于多部门情况
+     */
+    private Set<String> deptIds;  // 改为集合
+
+    /**
      * 当前用户角色信息
      */
     public static class CurrentUserRole {
@@ -98,10 +103,26 @@ public class DataPermissionCurrentUser {
     }
 
     public String getDeptId() {
-        return deptId;
+        if (deptId != null) {
+            return deptId;
+        }
+        if (deptIds != null && !deptIds.isEmpty()) {
+            return deptIds.iterator().next();  // 返回第一个部门
+        }
+        return null;
     }
 
     public void setDeptId(String deptId) {
         this.deptId = deptId;
     }
+
+    // 获取所有部门
+    public Set<String> getDeptIds() {
+        return deptIds;
+    }
+
+    public void setDeptIds(Set<String> deptIds) {
+        this.deptIds = deptIds;
+    }
+
 }

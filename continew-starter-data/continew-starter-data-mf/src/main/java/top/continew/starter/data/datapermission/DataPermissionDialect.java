@@ -21,6 +21,7 @@ import com.mybatisflex.core.dialect.impl.CommonsDialectImpl;
 import com.mybatisflex.core.query.QueryWrapper;
 
 import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * 数据权限处理器实现类
@@ -117,7 +118,23 @@ public class DataPermissionDialect extends CommonsDialectImpl {
     private void buildDeptExpression(DataPermission dataPermission,
                                      DataPermissionCurrentUser currentUser,
                                      QueryWrapper queryWrapper) {
-        queryWrapper.eq(buildColumn(dataPermission.tableAlias(), dataPermission.deptId()), currentUser.getDeptId());
+        // 支持多部门
+        Set<String> deptIds = currentUser.getDeptIds();
+        if (deptIds != null && !deptIds.isEmpty()) {
+            if (deptIds.size() == 1) {
+                // 单个部门，使用 eq
+                queryWrapper.eq(buildColumn(dataPermission.tableAlias(), dataPermission.deptId()), deptIds.iterator()
+                    .next());
+            } else {
+                // 多个部门，使用 in
+                queryWrapper.in(buildColumn(dataPermission.tableAlias(), dataPermission.deptId()), deptIds);
+            }
+        } else if (currentUser.getDeptId() != null) {
+            // 兼容旧代码
+            queryWrapper.eq(buildColumn(dataPermission.tableAlias(), dataPermission.deptId()), currentUser.getDeptId());
+        }
+        // 旧代码
+        // queryWrapper.eq(buildColumn(dataPermission.tableAlias(), dataPermission.deptId()), currentUser.getDeptId());
     }
 
     /**
@@ -135,13 +152,38 @@ public class DataPermissionDialect extends CommonsDialectImpl {
     private void buildDeptAndChildExpression(DataPermission dataPermission,
                                              DataPermissionCurrentUser currentUser,
                                              QueryWrapper queryWrapper) {
-        QueryWrapper subQueryWrapper = QueryWrapper.create();
-        subQueryWrapper.select(dataPermission.id()).from(dataPermission.deptTableAlias());
-        subQueryWrapper.and(qw -> {
-            qw.eq(dataPermission.id(), currentUser.getDeptId())
-                .or("find_in_set(" + currentUser.getDeptId() + ",ancestors)");
-        });
-        queryWrapper.in(buildColumn(dataPermission.tableAlias(), dataPermission.deptId()), subQueryWrapper);
+        Set<String> deptIds = currentUser.getDeptIds();
+        if (deptIds != null && !deptIds.isEmpty()) {
+            // 构建子查询，包含所有部门及其子部门
+            QueryWrapper subQueryWrapper = QueryWrapper.create();
+            subQueryWrapper.select(dataPermission.id()).from(dataPermission.deptTableAlias());
+
+            // 构建 OR 条件
+            subQueryWrapper.and(qw -> {
+                for (String deptId : deptIds) {
+                    qw.or((Consumer<QueryWrapper>)q -> q.eq(dataPermission.id(), deptId)
+                        .or("find_in_set(" + deptId + ",ancestors)"));
+                }
+            });
+            queryWrapper.in(buildColumn(dataPermission.tableAlias(), dataPermission.deptId()), subQueryWrapper);
+        } else if (currentUser.getDeptId() != null) {
+            // 兼容旧代码
+            QueryWrapper subQueryWrapper = QueryWrapper.create();
+            subQueryWrapper.select(dataPermission.id()).from(dataPermission.deptTableAlias());
+            subQueryWrapper.and(qw -> {
+                qw.eq(dataPermission.id(), currentUser.getDeptId())
+                    .or("find_in_set(" + currentUser.getDeptId() + ",ancestors)");
+            });
+            queryWrapper.in(buildColumn(dataPermission.tableAlias(), dataPermission.deptId()), subQueryWrapper);
+        }
+
+        // QueryWrapper subQueryWrapper = QueryWrapper.create();
+        // subQueryWrapper.select(dataPermission.id()).from(dataPermission.deptTableAlias());
+        // subQueryWrapper.and(qw -> {
+        //     qw.eq(dataPermission.id(), currentUser.getDeptId())
+        //         .or("find_in_set(" + currentUser.getDeptId() + ",ancestors)");
+        // });
+        // queryWrapper.in(buildColumn(dataPermission.tableAlias(), dataPermission.deptId()), subQueryWrapper);
     }
 
     /**

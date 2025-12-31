@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.springdoc.core.configuration.SpringDocConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -43,6 +44,7 @@ import top.continew.starter.core.util.GeneralPropertySourceFactory;
 @EnableWebMvc
 @AutoConfiguration(before = SpringDocConfiguration.class)
 @PropertySource(value = "classpath:default-api-doc.yml", factory = GeneralPropertySourceFactory.class)
+@EnableConfigurationProperties(SpringDocExtensionProperties.class)
 public class SpringDocAutoConfiguration implements WebMvcConfigurer {
 
     private static final Logger log = LoggerFactory.getLogger(SpringDocAutoConfiguration.class);

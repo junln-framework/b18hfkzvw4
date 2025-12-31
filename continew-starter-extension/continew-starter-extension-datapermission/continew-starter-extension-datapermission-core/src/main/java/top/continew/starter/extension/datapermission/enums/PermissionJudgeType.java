@@ -16,47 +16,32 @@
 
 package top.continew.starter.extension.datapermission.enums;
 
-/**
- * 数据权限枚举
- *
- * @author Charles7c
- * @since 1.1.0
- */
-public enum DataScope {
+public enum PermissionJudgeType {
+    /**
+     * 直接字段判断权限：如通过默认的dept_id字段直接判断
+     * 适用于：业务表直接有默认dept_id字段
+     */
+    DEF_DIRECT("直接字段判断权限"),
 
     /**
-     * 全部数据权限
+     * 其他字段关联权限：如通过user_id关联sys_user_dept表判断
+     * 适用于：指定业务表某字段，需要通过关联表判断权限
      */
-    ALL("全部数据权限"),
+    RELATION_DIRECT("其他字段关联权限"),
 
     /**
-     * 本部门及以下数据权限
+     * 用户直接权限：通过user_id字段直接判断
+     * 适用于：仅本人数据权限的场景
      */
-    DEPT_AND_CHILD("本部门及以下数据权限,如果是"),
-
-    /**
-     * 本部门数据权限
-     */
-    DEPT("本部门数据权限"),
-
-    /**
-     * 仅本人数据权限
-     */
-    SELF("仅本人数据权限"),
-
-    /**
-     * 自定义数据权限
-     */
-    CUSTOM("自定义数据权限");
+    USER_DIRECT("用户直接权限");
 
     private final String description;
 
-    DataScope(String description) {
+    PermissionJudgeType(String description) {
         this.description = description;
     }
 
     public String getDescription() {
         return description;
     }
-
 }

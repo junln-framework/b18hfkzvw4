@@ -63,4 +63,9 @@ public @interface DataPermission {
      * 角色和部门关联表别名
      */
     String roleDeptTableAlias() default "sys_role_dept";
+
+    /**
+     * 扩展 销售人员 ID
+     */
+    String saleId() default "sale_id";
 }

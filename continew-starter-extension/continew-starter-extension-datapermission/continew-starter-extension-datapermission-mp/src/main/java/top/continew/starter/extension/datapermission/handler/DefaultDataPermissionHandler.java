@@ -40,15 +40,14 @@ import top.continew.starter.extension.datapermission.annotation.DataPermission;
 import top.continew.starter.extension.datapermission.constant.DataPermissionConstants;
 import top.continew.starter.extension.datapermission.enums.DataScope;
 import top.continew.starter.extension.datapermission.exception.DataPermissionException;
+import top.continew.starter.extension.datapermission.model.DeptData;
 import top.continew.starter.extension.datapermission.model.RoleData;
 import top.continew.starter.extension.datapermission.model.UserData;
 import top.continew.starter.extension.datapermission.provider.DataPermissionUserDataProvider;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -148,15 +147,31 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
         Expression expression = null;
         Set<RoleData> roles = userData.getRoles();
 
+        List<Long> deptIds = new ArrayList<>(userData.getDepartments()
+            .stream()
+            .map(DeptData::getDeptId)
+            .distinct()  // 去重
+            .toList());
+        if (!userData.getChildrenDepartments().isEmpty()) {
+            List<Long> tempIds = userData.getDepartments()
+                .stream()
+                .map(DeptData::getDeptId)
+                .distinct()  // 去重
+                .toList();
+            deptIds.addAll(tempIds);
+        }
+
         for (RoleData roleData : roles) {
             DataScope dataScope = roleData.getDataScope();
+            // 如果包含全部权限,就不加SQL条件
             if (DataScope.ALL.equals(dataScope)) {
                 return where;
             }
 
             expression = switch (dataScope) {
-                case DEPT_AND_CHILD -> buildDeptAndChildExpression(dataPermission, userData, expression);
-                case DEPT -> buildDeptExpression(dataPermission, userData, expression);
+                case DEPT_AND_CHILD ->
+                    buildDeptAndChildExpressionByJudgeType(dataPermission, userData, expression, deptIds);
+                case DEPT -> buildDeptExpressionByJudgeType(dataPermission, userData, expression, deptIds);
                 case SELF -> buildSelfExpression(dataPermission, userData, expression);
                 case CUSTOM -> buildCustomExpression(dataPermission, roleData, expression);
                 default -> throw DataPermissionException.unsupportedDataScope(dataScope.toString());
@@ -196,7 +211,7 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
         if (DatabaseType.MYSQL.getDatabase().equalsIgnoreCase(databaseType.getDatabase())) {
             Function findInSetFunction = new Function();
             findInSetFunction.setName("find_in_set");
-            findInSetFunction.setParameters(new ExpressionList(new LongValue(userData
+            findInSetFunction.setParameters(new ExpressionList<>(new LongValue(userData
                 .getDeptId()), new Column(DataPermissionConstants.ANCESTORS_COLUMN)));
             inSetExpression = findInSetFunction;
         } else if (DatabaseType.POSTGRE_SQL.getDatabase().equalsIgnoreCase(databaseType.getDatabase())) {
@@ -224,6 +239,92 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
     }
 
     /**
+     * 构建EXISTS 子查询表达式
+     *
+     * @param dataPermission 数据权限
+     * @param userData       角色上下文
+     * @param deptIds        部门 ID列表
+     * @return EXISTS 表达式
+     */
+    public Expression buildDeptAndChildRelationExistsExpression(DataPermission dataPermission,
+                                                                UserData userData,
+                                                                List<Long> deptIds) {
+
+        String relationTable = dataPermission.relationTableField();
+        String relationField = dataPermission.relationField();
+        String relationDeptIdField = dataPermission.relationDeptIdField();
+        String mainTableAlias = dataPermission.tableAlias();
+        String mainUserIdField = dataPermission.id();
+
+        // 1. 构建EXISTS表达式
+        ExistsExpression existsExpression = new ExistsExpression();
+
+        // 2. 构建子查询
+        PlainSelect subSelect = new PlainSelect();
+
+        // 2.1 设置SELECT子句
+        subSelect.setSelectItems(Collections.singletonList(new SelectItem<>(new LongValue(1))));
+
+        // 2.2 设置FROM子句
+        subSelect.setFromItem(new Table(relationTable));
+
+        // 2.3 构建WHERE条件
+        List<Expression> conditions = new ArrayList<>();
+
+        // 条件1：关联表.user_id = 主表.id
+        EqualsTo userCondition = new EqualsTo(this.buildColumn(relationTable, relationField), this
+            .buildColumn(mainTableAlias, mainUserIdField));
+        conditions.add(userCondition);
+
+        // 条件2：关联表.dept_id IN (...)
+        if (deptIds != null && !deptIds.isEmpty()) {
+            Expression deptCondition = buildInCondition(this.buildColumn(relationTable, relationDeptIdField), //关联表.dept_id
+                deptIds);
+            conditions.add(deptCondition);
+        } else {
+            // 如果deptIds为空，返回1=0（false条件）
+            return buildFalseCondition();
+        }
+
+        // 2.4 合并WHERE条件
+        Expression whereExpression = conditions.get(0);
+        for (int i = 1; i < conditions.size(); i++) {
+            whereExpression = new AndExpression(whereExpression, conditions.get(i));
+        }
+        subSelect.setWhere(whereExpression);
+        // 3. 将子查询包装到EXISTS中
+        ParenthesedSelect parenthesedSelect = new ParenthesedSelect();
+        parenthesedSelect.setSelect(subSelect);
+        existsExpression.setRightExpression(parenthesedSelect);
+
+        return existsExpression;
+    }
+
+    /**
+     * 构建本部门及以下数据权限表达式
+     *
+     * @param dataPermission 数据权限
+     * @param userData       用户数据
+     * @param expression     处理前的表达式
+     * @param deptIds        参数 id
+     */
+    private Expression buildDeptAndChildExpressionByJudgeType(DataPermission dataPermission,
+                                                              UserData userData,
+                                                              Expression expression,
+                                                              List<Long> deptIds) {
+        return switch (dataPermission.judgeType()) {
+            case DEF_DIRECT -> buildDeptAndChildExpression(dataPermission, userData, expression);
+            case RELATION_DIRECT -> {
+                yield buildDeptAndChildRelationExistsExpression(dataPermission, userData, deptIds);
+            }
+            case USER_DIRECT ->
+                // USER_DIRECT不适用于部门权限，返回false
+                buildFalseCondition();
+            default -> buildFalseCondition();
+        };
+    }
+
+    /**
      * 构建本部门数据权限表达式
      *
      * <p>
@@ -240,6 +341,28 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
         equalsTo.setLeftExpression(this.buildColumn(dataPermission.tableAlias(), dataPermission.deptId()));
         equalsTo.setRightExpression(new LongValue(userData.getDeptId()));
         return expression != null ? new OrExpression(expression, equalsTo) : equalsTo;
+    }
+
+    /**
+     * 构建本部门及以下数据权限表达式
+     *
+     * @param dataPermission 数据权限
+     * @param userData       用户数据
+     * @param expression     处理前的表达式
+     * @param deptIds        参数 id
+     */
+    private Expression buildDeptExpressionByJudgeType(DataPermission dataPermission,
+                                                      UserData userData,
+                                                      Expression expression,
+                                                      List<Long> deptIds) {
+        return switch (dataPermission.judgeType()) {
+            case DEF_DIRECT -> buildDeptExpression(dataPermission, userData, expression);
+            case RELATION_DIRECT -> buildDeptAndChildRelationExistsExpression(dataPermission, userData, deptIds);
+            case USER_DIRECT ->
+                // USER_DIRECT不适用于部门权限，返回false
+                buildFalseCondition();
+            default -> buildFalseCondition();
+        };
     }
 
     /**
@@ -304,4 +427,43 @@ public class DefaultDataPermissionHandler implements DataPermissionHandler {
         }
         return new Column(columnName);
     }
+
+    /*    public static String expressionToString(Expression expression) {
+        return expression.toString();
+    }*/
+
+    /**
+     * 构建 IN条件
+     */
+    private Expression buildInCondition(Column column, List<Long> values) {
+        if (values == null || values.isEmpty()) {
+            return buildFalseCondition();
+        }
+        InExpression inExpression = new InExpression();
+        inExpression.setLeftExpression(column);
+        ExpressionList<Expression> valueList = new ExpressionList<>();
+        for (Long value : values) {
+            valueList.addExpressions(new LongValue(value));
+        }
+        ParenthesedExpressionList<Expression> parenthesesList = new ParenthesedExpressionList<>(valueList);
+        inExpression.setRightExpression(parenthesesList);
+        return inExpression;
+    }
+
+    private Expression buildFalseCondition() {
+        return new EqualsTo(new LongValue(1), new LongValue(0));
+    }
+
+    /*    private String renderExpression(Expression expression) {
+        if (expression == null) {
+            return "";
+        }
+    
+        StringBuilder buffer = new StringBuilder();
+        // JSqlParser 5.x: 通过构造函数传递 StringBuilder
+        ExpressionDeParser deParser = new ExpressionDeParser(buffer);
+        expression.accept(deParser);
+    
+        return buffer.toString();
+    }*/
 }
