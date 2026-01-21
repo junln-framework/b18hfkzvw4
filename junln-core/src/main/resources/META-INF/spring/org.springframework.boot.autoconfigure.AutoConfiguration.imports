@@ -1,0 +1,2 @@
+cn.junln.framework.core.autoconfigure.application.ApplicationAutoConfiguration
+cn.junln.framework.core.autoconfigure.threadpool.ThreadPoolAutoConfiguration

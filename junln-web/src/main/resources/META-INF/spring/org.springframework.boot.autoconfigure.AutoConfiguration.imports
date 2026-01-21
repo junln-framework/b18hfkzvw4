@@ -1,0 +1,3 @@
+cn.junln.framework.web.autoconfigure.mvc.WebMvcAutoConfiguration
+cn.junln.framework.web.autoconfigure.cors.CorsAutoConfiguration
+cn.junln.framework.web.autoconfigure.server.UndertowAutoConfiguration

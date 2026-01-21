@@ -1,0 +1,7 @@
+{
+  "cn.junln.framework.idempotent.annotation.Idempotent@key":{
+    "method":{
+      "parameters": true
+    }
+  }
+}

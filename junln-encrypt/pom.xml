@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>cn.junln.framework</groupId>
+        <artifactId>junln</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>junln-encrypt</artifactId>
+    <packaging>pom</packaging>
+
+    <name>${project.artifactId}</name>
+    <description>Junln Framework 加密模块</description>
+
+    <modules>
+        <module>junln-encrypt-core</module>
+        <module>junln-encrypt-field</module>
+        <module>junln-encrypt-api</module>
+        <module>junln-encrypt-password-encoder</module>
+    </modules>
+</project>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>cn.junln.framework</groupId>
+        <artifactId>junln-captcha</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>junln-captcha-behavior</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
+    <description>Junln Framework 验证码模块 - 行为验证码</description>
+
+    <dependencies>
+        <!-- 缓存模块 - Redisson -->
+        <dependency>
+            <groupId>cn.junln.framework</groupId>
+            <artifactId>junln-cache-redisson</artifactId>
+        </dependency>
+
+        <!-- AJ-Captcha（行为验证码，包含滑动拼图、文字点选两种方式，UI支持弹出和嵌入两种方式） -->
+        <dependency>
+            <groupId>com.anji-plus</groupId>
+            <artifactId>captcha</artifactId>
+        </dependency>
+    </dependencies>
+</project>

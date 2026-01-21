@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>cn.junln.framework</groupId>
+        <artifactId>junln-extension-crud</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>junln-extension-crud-core</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.artifactId}</name>
+    <description>Junln Framework 扩展模块 - CRUD（增删改查） - 核心模块</description>
+
+    <dependencies>
+        <!-- API 文档模块 -->
+        <dependency>
+            <groupId>cn.junln.framework</groupId>
+            <artifactId>junln-api-doc</artifactId>
+        </dependency>
+
+        <!-- Web 模块 -->
+        <dependency>
+            <groupId>cn.junln.framework</groupId>
+            <artifactId>junln-web</artifactId>
+        </dependency>
+
+        <!-- 数据访问模块 - 核心模块 -->
+        <dependency>
+            <groupId>cn.junln.framework</groupId>
+            <artifactId>junln-data-core</artifactId>
+        </dependency>
+
+        <!-- Excel 文件处理模块 - FastExcel -->
+        <dependency>
+            <groupId>cn.junln.framework</groupId>
+            <artifactId>junln-excel-fastexcel</artifactId>
+        </dependency>
+    </dependencies>
+</project>

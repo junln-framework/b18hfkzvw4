@@ -4,20 +4,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>top.continew.starter</groupId>
-        <artifactId>continew-starter-dependencies</artifactId>
+        <groupId>cn.junln.framework</groupId>
+        <artifactId>junln-dependencies</artifactId>
         <version>${revision}</version>
-        <relativePath>./continew-starter-dependencies</relativePath>
+        <relativePath>./junln-dependencies</relativePath>
     </parent>
 
-    <artifactId>continew-starter</artifactId>
+    <artifactId>junln</artifactId>
     <packaging>pom</packaging>
 
-    <name>ContiNew Starter</name>
+    <name>Junln Framework</name>
     <description>
-        ContiNew Starter（Continue New Starter）基于“约定优于配置”理念，进一步精简常规配置，提供完整的配置解决方案，帮助开发人员更快速地将常用第三方库或工具集成到 Spring Boot Web 应用程序中。
-        ContiNew Starter 封装了一系列经过企业实践验证的依赖包（如 MyBatis-Plus、SaToken），可轻松集成到应用中，减少开发人员手动引入依赖及配置的工作量，为 Spring Boot Web 项目的灵活快速构建提供支持。
-        ContiNew Starter 源自 ContiNew Admin 后台管理框架项目。随着 ContiNew Admin 的发展，作者发现初学者需要关注过多的脚手架通用基础能力，且在新项目中复用这些能力时存在迁移困难的问题。于是，ContiNew Starter 应运而生，作者在 ContiNew Admin 2.x 版本时，将项目中的通用基础能力进行了抽离并深度优化。这样，无论是在 ContiNew Admin 中使用，还是单独使用这些基础能力，都可以更加轻松。
     </description>
 
     <properties>
@@ -32,28 +29,28 @@
     </properties>
 
     <modules>
-        <module>continew-starter-dependencies</module>
-        <module>continew-starter-bom</module>
-        <module>continew-starter-core</module>
-        <module>continew-starter-json</module>
-        <module>continew-starter-api-doc</module>
-        <module>continew-starter-validation</module>
-        <module>continew-starter-web</module>
-        <module>continew-starter-cache</module>
-        <module>continew-starter-auth</module>
-        <module>continew-starter-data</module>
-        <module>continew-starter-encrypt</module>
-        <module>continew-starter-security</module>
-        <module>continew-starter-ratelimiter</module>
-        <module>continew-starter-idempotent</module>
-        <module>continew-starter-trace</module>
-        <module>continew-starter-captcha</module>
-        <module>continew-starter-messaging</module>
-        <module>continew-starter-log</module>
-        <module>continew-starter-excel</module>
-        <module>continew-starter-storage</module>
-        <module>continew-starter-license</module>
-        <module>continew-starter-extension</module>
+        <module>junln-dependencies</module>
+        <module>junln-bom</module>
+        <module>junln-core</module>
+        <module>junln-json</module>
+        <module>junln-api-doc</module>
+        <module>junln-validation</module>
+        <module>junln-web</module>
+        <module>junln-cache</module>
+        <module>junln-auth</module>
+        <module>junln-data</module>
+        <module>junln-encrypt</module>
+        <module>junln-security</module>
+        <module>junln-ratelimiter</module>
+        <module>junln-idempotent</module>
+        <module>junln-trace</module>
+        <module>junln-captcha</module>
+        <module>junln-messaging</module>
+        <module>junln-log</module>
+        <module>junln-excel</module>
+        <module>junln-storage</module>
+        <module>junln-license</module>
+        <module>junln-extension</module>
     </modules>
 
     <build>
@@ -122,7 +119,7 @@
         </plugins>
     </build>
 
-    <url>https://github.com/continew-org/continew-starter</url>
+    <url>https://github.com/orgs/junln-framework</url>
     <licenses>
         <license>
             <name>GNU LESSER GENERAL PUBLIC LICENSE</name>
@@ -131,20 +128,20 @@
     </licenses>
     <developers>
         <developer>
-            <id>charles7c</id>
-            <name>Charles7c</name>
-            <email>charles7c@126.com</email>
+            <id>zjyau</id>
+            <name>zjyau</name>
+            <email>zjyau@hotmail.com</email>
             <roles>
                 <role>Creator</role>
                 <role>Java Development Engineer</role>
             </roles>
             <timezone>+8</timezone>
-            <url>https://github.com/Charles7c</url>
+            <url>https://github.com/zjyau</url>
         </developer>
     </developers>
     <scm>
-        <connection>scm:git:git@github.com:continew-org/continew-starter.git</connection>
-        <developerConnection>scm:git:git@github.com:continew-org/continew-starter.git</developerConnection>
-        <url>https://github.com/continew-org/continew-starter</url>
+        <connection>scm:git:git@github.com:junln-framework/b18hfkzvw4.git</connection>
+        <developerConnection>scm:git:git@github.com:junln-framework/b18hfkzvw4.git</developerConnection>
+        <url>https://github.com/orgs/junln-framework/b18hfkzvw4</url>
     </scm>
 </project>

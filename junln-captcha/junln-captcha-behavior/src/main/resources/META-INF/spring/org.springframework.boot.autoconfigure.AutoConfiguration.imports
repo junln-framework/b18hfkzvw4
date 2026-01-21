@@ -1,0 +1,2 @@
+cn.junln.framework.captcha.behavior.autoconfigure.BehaviorCaptchaAutoConfiguration
+cn.junln.framework.captcha.behavior.autoconfigure.cache.BehaviorCaptchaCacheAutoConfiguration

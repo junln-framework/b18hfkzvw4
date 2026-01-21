@@ -4,7 +4,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        感谢您使用 ContiNew Starter！请您花些时间填写这份 Feature 调查。
+        感谢您使用 Junln Framework！请您花些时间填写这份 Feature 调查。
   - type: checkboxes
     id: checkboxes
     attributes:
