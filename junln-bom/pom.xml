@@ -13,7 +13,7 @@
     <description>Junln Framework BOM</description>
 
     <properties>
-        <revision>1.0.0</revision>
+        <revision>1.0.1</revision>
     </properties>
 
     <dependencyManagement>
@@ -430,7 +430,7 @@
         </profile>
     </profiles>
 
-    <url>https://github.com/continew-org/junln</url>
+    <url>https://github.com/zjyau</url>
     <licenses>
         <license>
             <name>GNU LESSER GENERAL PUBLIC LICENSE</name>
@@ -451,8 +451,8 @@
         </developer>
     </developers>
     <scm>
-        <connection>scm:git:git@github.com:junln-framework/b18hfkzvw4.git</connection>
-        <developerConnection>scm:git:git@github.com:junln-framework/b18hfkzvw4.git</developerConnection>
-        <url>https://github.com/orgs/junln-framework/b18hfkzvw4</url>
+        <connection>scm:git:git@github.com:junln-framework/Junln-Framework.git</connection>
+        <developerConnection>scm:git:git@github.com:junln-framework/Junln-Framework.git</developerConnection>
+        <url>https://github.com/junln-framework/Junln-Framework</url>
     </scm>
 </project>

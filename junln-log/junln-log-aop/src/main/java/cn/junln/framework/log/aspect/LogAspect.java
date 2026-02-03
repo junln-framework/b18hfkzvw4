@@ -60,7 +60,7 @@ public class LogAspect {
     /**
      * 切点 - 匹配日志注解 {@link Log}
      */
-    @Pointcut("@annotation(annotation.cn.junln.framework.log.Log)")
+    @Pointcut("@annotation(cn.junln.framework.log.annotation.Log)")
     public void pointcut() {
     }
 

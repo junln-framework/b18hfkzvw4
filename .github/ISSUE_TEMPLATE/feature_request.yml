@@ -7,18 +7,6 @@ body:
         感谢您使用 Junln Framework！请您花些时间填写这份 Feature 调查。
   - type: checkboxes
     id: checkboxes
-    attributes:
-      label: 请您确认
-      description: 在提交 Feature 之前，请确认执行过以下操作。
-      options:
-        - label: 尝试 [最新版本](https://central.sonatype.com/artifact/top.continew/continew-starter/versions)（还可以尝试本地编译安装 dev 分支的最新快照版本），仍没有该功能
-          required: true
-        - label: 查阅过 [使用指南](https://continew.top/docs/starter/guide/introduction.html) 和 [常见问题](https://continew.top/docs/starter/faq.html) ，仍然认为很有必要
-          required: true
-        - label: 搜索了 [吐槽广场](https://continew.top/docs/starter/issue-hub.html)，没有其他人提交过类似的 Feature（如果对应 Feature 尚未实现，您可以先订阅关注该 Issue，为了方便后来者查找问题解决方法，请避免创建重复的 Issue）
-          required: true
-        - label: 是否愿意为您提出的 Feature 提交 PR？
-          required: false
     validations:
       required: true
   - type: textarea

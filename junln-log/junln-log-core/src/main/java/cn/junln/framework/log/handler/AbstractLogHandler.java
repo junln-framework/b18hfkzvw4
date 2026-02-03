@@ -110,7 +110,7 @@ public abstract class AbstractLogHandler implements LogHandler {
      */
     @Override
     public void logDescription(LogRecord logRecord, Method targetMethod) {
-        logRecord.setDescription("请在该接口方法上添加 @annotation.cn.junln.framework.log.Log(value) 来指定日志描述");
+        logRecord.setDescription("请在该接口方法上添加 @cn.junln.framework.log.annotation.Log(value) 来指定日志描述");
         Log methodLog = AnnotationUtil.getAnnotation(targetMethod, Log.class);
         // 例如：@Log("新增部门") -> 新增部门
         if (methodLog != null && CharSequenceUtil.isNotBlank(methodLog.value())) {
@@ -133,7 +133,7 @@ public abstract class AbstractLogHandler implements LogHandler {
      */
     @Override
     public void logModule(LogRecord logRecord, Method targetMethod, Class<?> targetClass) {
-        logRecord.setModule("请在该接口方法或类上添加 @annotation.cn.junln.framework.log.Log(module) 来指定所属模块");
+        logRecord.setModule("请在该接口方法或类上添加 @cn.junln.framework.log.annotation.Log(module) 来指定所属模块");
         Log methodLog = AnnotationUtil.getAnnotation(targetMethod, Log.class);
         // 例如：@Log(module = "部门管理") -> 部门管理
         // 方法级注解优先级高于类级注解

@@ -7,7 +7,7 @@ on:
 
 jobs:
   release:
-    if: github.repository == 'continew-org/continew-starter'
+    if: github.repository == 'junln-framework/Junln-Framework'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
